@@ -16,7 +16,7 @@ body {
   display: flex;                 /* ✅ ทำให้ body เป็น flex */
   justify-content: center;       /* ✅ จัดกลางแนวนอน */
   align-items: center;           /* ✅ จัดกลางแนวตั้ง */
-  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/blob/main/IMG_4220.jpg') no-repeat center center;
+  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/main/IMG_4220.jpg') no-repeat center center;
 background-size: cover;
 background-attachment: scroll;
   background-size: cover;
@@ -183,31 +183,34 @@ fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLN
     dateFormat:"Y-m-d",
     enable:dates,
     onChange:(s,v)=>{
-  if(!v)return;
+      if(!v)return;
 
-  fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec?date=" + v)
-  .then(res => res.json())
-  .then(slots => {
-    el.time.innerHTML='';
+      fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec?date=" + v)
+      .then(res => res.json())
+      .then(slots => {
 
-    if(!slots.length){
-      el.time.innerHTML='<option>-- ไม่มีเวลาว่าง --</option>';
-      el.time.disabled=true;
-      return;
+        el.time.innerHTML='';
+
+        if(!slots.length){
+          el.time.innerHTML='<option>-- ไม่มีเวลาว่าง --</option>';
+          el.time.disabled=true;
+          return;
+        }
+
+        el.time.innerHTML='<option value="">-- เลือกเวลา --</option>';
+
+        slots.forEach(s=>{
+          const o=document.createElement('option');
+          o.value=s;
+          o.textContent=s+" น.";
+          el.time.appendChild(o);
+        });
+
+        el.time.disabled=false;
+      });
     }
-
-    el.time.innerHTML='<option value="">-- เลือกเวลา --</option>';
-
-    slots.forEach(s=>{
-      const o=document.createElement('option');
-      o.value=s;
-      o.textContent=s+" น.";
-      el.time.appendChild(o);
-    });
-
-    el.time.disabled=false;
   });
-}
+});  // 👈 อันนี้สำคัญมาก ห้ามหาย
 
 function readFilesAsBase64(files){
   const arr=[],limit=Math.min(files.length,4);
