@@ -288,7 +288,11 @@ el.form.addEventListener('submit', async e => {
       body: JSON.stringify({ data, imgs }),
       headers: { "Content-Type": "application/json" }
     })
-    .then(res => res.json())
+    .then(res => res.text())
+.then(r => {
+  console.log(r);
+  alert(r);
+})
     .then(r => {
       el.submitBtn.disabled = false;
       el.submitBtn.textContent = 'บันทึกการจอง';
