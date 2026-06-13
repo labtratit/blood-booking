@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ระบบจองคิวเจาะเลือด</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <style>
+body {
+  font-family: 'Kanit', sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;                 /* ✅ ทำให้ body เป็น flex */
+  justify-content: center;       /* ✅ จัดกลางแนวนอน */
+  align-items: center;           /* ✅ จัดกลางแนวตั้ง */
+  background: url('https://drive.google.com/uc?export=view&id=1uHAJLOvyDNyWYnL19UFtRDk4chGUeGxe') no-repeat center center;
+background-size: cover;
+background-attachment: scroll;
+  background-size: cover;
+  padding: 20px; /* กันกรอบไม่ติดขอบมือถือ */
+}
+
+.card {
+  width: 100%;
+  max-width: 640px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 18px;
+  padding: 32px 28px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+}
+
+.title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 0.2em;
+  background: linear-gradient(135deg,#8a1f2f,#a5283a,#c03a4e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.2em;
+  margin-bottom: 1em;
+  color: #444;
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+label::after {
+  content: " *";
+  color: red;
+}
+
+input,select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  margin-bottom: 8px;
+  box-sizing: border-box;   /* ✅ ทำให้ padding ซ้าย-ขวาสมดุล */
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg,#8a1f2f,#a5283a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  font-family: 'Kanit',sans-serif;
+  position: relative;
+}
+
+.spinner {
+  border: 3px solid rgba(255,255,255,.3);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+
+.msg {
+  margin-top: 12px;
+  color: #a00;
+  font-size: 14px;
+  display: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;left: 0;
+  width: 100%;height: 100%;
+  background: rgba(0,0,0,.6);
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background:#fff;
+  padding:24px;
+  border-radius:12px;
+  text-align:center;
+  max-width:420px;
+}
+.modal-content p {
+  font-size:22px;
+}
+@media(max-width:480px){
+  .title {font-size:46px}
+  label {font-size:26px}
+  input,select {font-size:26px;padding:22px;box-sizing:border-box;}
+  .btn {font-size:28px;padding:24px}
+}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 class="title">ระบบจองคิวเจาะเลือด</h1>
+    <p class="subtitle">การจองคิวนี้ไม่ได้ยืนยันว่าท่านได้คิว ต้องรอการยืนยันผ่านอีเมลอีกครั้ง</p>
+
+    <form id="form">
+      <label>วันที่</label><input type="text" id="date" required readonly>
+      <label>เวลา</label><select id="time" required disabled><option>-- กรุณาเลือกวันที่ก่อน --</option></select>
+      <label>ชื่อ</label><input id="firstName" required>
+      <label>นามสกุล</label><input id="lastName" required>
+      <label>H.N. (ตัวอย่าง 1234/56) </label>
+<input id="hn" required>
+      <label>เลขบัตรประชาชน</label><input type="tel" id="nationalId" inputmode="numeric" pattern="[0-9]{13}" required>
+      <label>เบอร์โทร</label><input type="tel" id="phone" inputmode="numeric" pattern="[0-9]{9,10}" required>
+      <label>Email</label><input type="email" id="email" required>
+      <label>ใบนัด (สูงสุด 4 รูป)</label><input type="file" id="slips" accept="image/*" multiple required>
+      <div class="msg" id="msg"></div>
+      <button class="btn" type="submit" id="submitBtn">บันทึกการจอง</button>
+    </form>
+  </div>
+
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <p>ก่อนถึงวันนัดอย่างน้อย 1 วัน โปรดตรวจสอบ e-mail ของท่าน เพื่อยืนยันการจองคิว</p>
+      <button onclick="closeModal()">ปิด</button>
+    </div>
+  </div>
+
+<script>
+const el={
+  date:document.getElementById('date'),
+  time:document.getElementById('time'),
+  form:document.getElementById('form'),
+  msg:document.getElementById('msg'),
+  slips:document.getElementById('slips'),
+  modal:document.getElementById('successModal'),
+  submitBtn:document.getElementById('submitBtn')
+};
+
+function showError(t){el.msg.textContent=t;el.msg.style.display='block';}
+function openModal(){el.modal.style.display='flex';}
+function closeModal(){el.modal.style.display='none';}
+
+fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec")
+.then(res => res.json())
+.then(dates => {
+  flatpickr(el.date,{
+    dateFormat:"Y-m-d",
+    enable:dates,
+    onChange:(s,v)=>{
+      if(!v)return;
+     fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec" + v)
+.then(res => res.json())
+.then(slots => {
+        el.time.innerHTML='';
+        if(!slots.length){
+          el.time.innerHTML='<option>-- ไม่มีเวลาว่าง --</option>';
+          el.time.disabled=true;return;
+        }
+        el.time.innerHTML='<option value="">-- เลือกเวลา --</option>';
+        slots.forEach(s=>{
+          const o=document.createElement('option');
+          o.value=s;o.textContent=s+" น.";
+          el.time.appendChild(o);
+        });
+        el.time.disabled=false;
+      }).getAvailableTimeSlots(v);
+    }
+  });
+}).getSelectableDates();
+
+function readFilesAsBase64(files){
+  const arr=[],limit=Math.min(files.length,4);
+  for(let i=0;i<limit;i++){
+    const f=files[i];
+    arr.push(new Promise((res,rej)=>{
+      const r=new FileReader();
+      r.onload=()=>res({name:f.name,type:f.type,data:r.result.split(',')[1]});
+      r.onerror=rej;
+      r.readAsDataURL(f);
+    }));
+  }
+  return Promise.all(arr);
+}
+
+el.form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!el.form.reportValidity())return;
+  if(el.slips.files.length===0){showError('กรุณาแนบใบนัด');return;}
+  if(el.slips.files.length>4){showError('แนบใบนัดได้สูงสุด 4 รูป');return;}
+  el.submitBtn.disabled=true;
+  el.submitBtn.innerHTML='<span class="spinner"></span>กำลังบันทึก...';
+  try{
+    const imgs=await readFilesAsBase64(el.slips.files);
+    const data={
+      date:el.date.value,time:el.time.value,
+      firstName:form.firstName.value,lastName:form.lastName.value,
+      hn:form.hn.value,nationalId:form.nationalId.value,
+      phone:form.phone.value,email:form.email.value
+    };
+    
+    fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec", {
+  method: "POST",
+  body: JSON.stringify({ data, imgs }),
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(res => res.json())
+.then(r => {
+  el.submitBtn.disabled=false;
+  el.submitBtn.textContent='บันทึกการจอง';
+
+  if(r && r.success){
+    openModal();
+  } else {
+    showError(r && r.message ? r.message : 'บันทึกไม่สำเร็จ');
+  }
+})
+.catch(() => {
+  el.submitBtn.disabled=false;
+  el.submitBtn.textContent='บันทึกการจอง';
+  showError('เกิดข้อผิดพลาด');
+});
+</script>
+</body>
+</html>
