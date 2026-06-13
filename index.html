@@ -12,15 +12,13 @@
 body {
   font-family: 'Kanit', sans-serif;
   margin: 0;
-  height: 100vh;
-  display: flex;                 /* ✅ ทำให้ body เป็น flex */
-  justify-content: center;       /* ✅ จัดกลางแนวนอน */
-  align-items: center;           /* ✅ จัดกลางแนวตั้ง */
-  background: url('https://drive.google.com/uc?export=view&id=1uHAJLOvyDNyWYnL19UFtRDk4chGUeGxe') no-repeat center center;
-background-size: cover;
-background-attachment: scroll;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/blob/main/IMG_4220.jpg') no-repeat center center;
   background-size: cover;
-  padding: 20px; /* กันกรอบไม่ติดขอบมือถือ */
 }
 
 .card {
@@ -30,15 +28,15 @@ background-attachment: scroll;
   border-radius: 18px;
   padding: 32px 28px;
   box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+
+  text-align: center; /* 👈 เพิ่มอันนี้ */
 }
 
 .title {
   text-align: center;
   font-size: 32px;
-  margin-bottom: 0.2em;
-  background: linear-gradient(135deg,#8a1f2f,#a5283a,#c03a4e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  margin-bottom: 5px;
+  color: #8a1f2f; /* 👈 เพิ่ม fallback */
 }
 
 .subtitle {
