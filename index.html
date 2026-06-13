@@ -16,7 +16,7 @@ body {
   display: flex;                 /* ✅ ทำให้ body เป็น flex */
   justify-content: center;       /* ✅ จัดกลางแนวนอน */
   align-items: center;           /* ✅ จัดกลางแนวตั้ง */
-  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/main/IMG_4220.jpg') no-repeat center center;
+  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/main/IMG_4220.jpg?v=2') no-repeat center center;
 background-size: cover;
 background-attachment: scroll;
   background-size: cover;
@@ -226,45 +226,67 @@ function readFilesAsBase64(files){
   return Promise.all(arr);
 }
 
-el.form.addEventListener('submit',async e=>{
+el.form.addEventListener('submit', async e => {
   e.preventDefault();
-  if(!el.form.reportValidity())return;
-  if(el.slips.files.length===0){showError('กรุณาแนบใบนัด');return;}
-  if(el.slips.files.length>4){showError('แนบใบนัดได้สูงสุด 4 รูป');return;}
-  el.submitBtn.disabled=true;
-  el.submitBtn.innerHTML='<span class="spinner"></span>กำลังบันทึก...';
-  try{
-    const imgs=await readFilesAsBase64(el.slips.files);
-    const data={
-      date:el.date.value,time:el.time.value,
-      firstName:form.firstName.value,lastName:form.lastName.value,
-      hn:form.hn.value,nationalId:form.nationalId.value,
-      phone:form.phone.value,email:form.email.value
-    };
-    
-    fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec", {
-  method: "POST",
-  body: JSON.stringify({ data, imgs }),
-  headers: {
-    "Content-Type": "application/json"
-  }
-})
-.then(res => res.json())
-.then(r => {
-  el.submitBtn.disabled=false;
-  el.submitBtn.textContent='บันทึกการจอง';
 
-  if(r && r.success){
-    openModal();
-  } else {
-    showError(r && r.message ? r.message : 'บันทึกไม่สำเร็จ');
+  if(!el.form.reportValidity()) return;
+
+  if(el.slips.files.length === 0){
+    showError('กรุณาแนบใบนัด');
+    return;
   }
-})
-.catch(() => {
-  el.submitBtn.disabled=false;
-  el.submitBtn.textContent='บันทึกการจอง';
-  showError('เกิดข้อผิดพลาด');
-});
+
+  if(el.slips.files.length > 4){
+    showError('แนบใบนัดได้สูงสุด 4 รูป');
+    return;
+  }
+
+  el.submitBtn.disabled = true;
+  el.submitBtn.innerHTML = '<span class="spinner"></span>กำลังบันทึก...';
+
+  try {
+    const imgs = await readFilesAsBase64(el.slips.files);
+
+    const data = {
+      date: el.date.value,
+      time: el.time.value,
+      firstName: form.firstName.value,
+      lastName: form.lastName.value,
+      hn: form.hn.value,
+      nationalId: form.nationalId.value,
+      phone: form.phone.value,
+      email: form.email.value
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec", {
+      method: "POST",
+      body: JSON.stringify({ data, imgs }),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.json())
+    .then(r => {
+      el.submitBtn.disabled = false;
+      el.submitBtn.textContent = 'บันทึกการจอง';
+
+      if(r && r.success){
+        openModal();
+      } else {
+        showError(r?.message || 'บันทึกไม่สำเร็จ');
+      }
+    })
+    .catch(() => {
+      el.submitBtn.disabled = false;
+      el.submitBtn.textContent = 'บันทึกการจอง';
+      showError('เกิดข้อผิดพลาด');
+    });
+
+  } catch(err){
+    el.submitBtn.disabled = false;
+    el.submitBtn.textContent = 'บันทึกการจอง';
+    showError('อัปโหลดไฟล์ไม่สำเร็จ');
+  }
+
+}); // 👈 👈 👈 ตัวนี้ห้ามลืมเด็ดขาด
 </script>
 </body>
 </html>
