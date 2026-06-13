@@ -12,17 +12,18 @@
 body {
   font-family: 'Kanit', sans-serif;
   margin: 0;
-  height: 100vh;
-  display: flex;                 /* ✅ ทำให้ body เป็น flex */
-  justify-content: center;       /* ✅ จัดกลางแนวนอน */
-  align-items: center;           /* ✅ จัดกลางแนวตั้ง */
-  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/main/IMG_4220.jpg?v=2') no-repeat center center;
-background-size: cover;
-background-attachment: scroll;
-  background-size: cover;
-  padding: 20px; /* กันกรอบไม่ติดขอบมือถือ */
-}
+  min-height: 100vh; /* 👈 เปลี่ยน */
+  
+  display: flex;
+  justify-content: center;
 
+  align-items: flex-start; /* 👈 สำคัญมาก */
+  
+  padding: 40px 20px; /* 👈 เพิ่ม */
+  
+  background: url('https://raw.githubusercontent.com/labtratit/blood-booking/main/IMG_4220.jpg') no-repeat center center;
+  background-size: cover;
+}
 .card {
   width: 100%;
   max-width: 640px;
