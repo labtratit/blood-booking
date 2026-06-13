@@ -210,7 +210,7 @@ fetch("https://mute-rice-cd61.labtratit.workers.dev/")
     onChange:(s,v)=>{
       if(!v)return;
 
-      fetch("https://mute-rice-cd61.labtratit.workers.dev/" + v)
+      fetch("https://mute-rice-cd61.labtratit.workers.dev/?date=" + v)
       .then(res => res.json())
       .then(slots => {
 
@@ -288,21 +288,17 @@ el.form.addEventListener('submit', async e => {
       body: JSON.stringify({ data, imgs }),
       headers: { "Content-Type": "application/json" }
     })
-    .then(res => res.text())
+    .then(res => res.json())
 .then(r => {
-  console.log(r);
-  alert(r);
-})
-    .then(r => {
-      el.submitBtn.disabled = false;
-      el.submitBtn.textContent = 'บันทึกการจอง';
+  el.submitBtn.disabled = false;
+  el.submitBtn.textContent = 'บันทึกการจอง';
 
-      if(r && r.success){
-        openModal();
-      } else {
-        showError(r?.message || 'บันทึกไม่สำเร็จ');
-      }
-    })
+  if(r && r.success){
+    openModal();
+  } else {
+    showError(r?.message || 'บันทึกไม่สำเร็จ');
+  }
+})
     .catch(() => {
       el.submitBtn.disabled = false;
       el.submitBtn.textContent = 'บันทึกการจอง';
