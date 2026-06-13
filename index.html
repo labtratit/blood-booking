@@ -201,7 +201,7 @@ function showError(t){el.msg.textContent=t;el.msg.style.display='block';}
 function openModal(){el.modal.style.display='flex';}
 function closeModal(){el.modal.style.display='none';}
 
-fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec")
+fetch("https://mute-rice-cd61.labtratit.workers.dev/")
 .then(res => res.json())
 .then(dates => {
   flatpickr(el.date,{
@@ -210,7 +210,7 @@ fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLN
     onChange:(s,v)=>{
       if(!v)return;
 
-      fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec?date=" + v)
+      fetch("https://mute-rice-cd61.labtratit.workers.dev/" + v)
       .then(res => res.json())
       .then(slots => {
 
@@ -283,7 +283,7 @@ el.form.addEventListener('submit', async e => {
       email: form.email.value
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec", {
+    fetch("https://mute-rice-cd61.labtratit.workers.dev/", {
       method: "POST",
       body: JSON.stringify({ data, imgs }),
       headers: { "Content-Type": "application/json" }
