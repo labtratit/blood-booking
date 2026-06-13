@@ -30,15 +30,15 @@ background-attachment: scroll;
   border-radius: 18px;
   padding: 32px 28px;
   box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
-
-  text-align: center; /* 👈 เพิ่มอันนี้ */
-}
+  text-align: left; /* 👈 เปลี่ยน */
+  }
 
 .title {
   text-align: center;
   font-size: 32px;
   margin-bottom: 5px;
   color: #8a1f2f; /* 👈 เพิ่ม fallback */
+  text-align: center;
 }
 
 .subtitle {
@@ -46,6 +46,7 @@ background-attachment: scroll;
   font-size: 1.2em;
   margin-bottom: 1em;
   color: #444;
+  text-align: center;
 }
 
 label {
@@ -182,26 +183,31 @@ fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLN
     dateFormat:"Y-m-d",
     enable:dates,
     onChange:(s,v)=>{
-      if(!v)return;
-     fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec" + v)
-.then(res => res.json())
-.then(slots => {
-        el.time.innerHTML='';
-        if(!slots.length){
-          el.time.innerHTML='<option>-- ไม่มีเวลาว่าง --</option>';
-          el.time.disabled=true;return;
-        }
-        el.time.innerHTML='<option value="">-- เลือกเวลา --</option>';
-        slots.forEach(s=>{
-          const o=document.createElement('option');
-          o.value=s;o.textContent=s+" น.";
-          el.time.appendChild(o);
-        });
-        el.time.disabled=false;
-      }).getAvailableTimeSlots(v);
+  if(!v)return;
+
+  fetch("https://script.google.com/macros/s/AKfycbyFHc-T2Bi0k24K1J6Hmn6u_tbEXyMfLNlPryWUJg4GJeZmISLK9pDJqPxRNxHUASnlAQ/exec?date=" + v)
+  .then(res => res.json())
+  .then(slots => {
+    el.time.innerHTML='';
+
+    if(!slots.length){
+      el.time.innerHTML='<option>-- ไม่มีเวลาว่าง --</option>';
+      el.time.disabled=true;
+      return;
     }
+
+    el.time.innerHTML='<option value="">-- เลือกเวลา --</option>';
+
+    slots.forEach(s=>{
+      const o=document.createElement('option');
+      o.value=s;
+      o.textContent=s+" น.";
+      el.time.appendChild(o);
+    });
+
+    el.time.disabled=false;
   });
-}).getSelectableDates();
+}
 
 function readFilesAsBase64(files){
   const arr=[],limit=Math.min(files.length,4);
